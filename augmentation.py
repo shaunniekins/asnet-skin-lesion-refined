@@ -1,3 +1,6 @@
+# augmentation.py
+
+import math
 from PIL import Image
 import numpy as np
 from keras.preprocessing import image
@@ -40,11 +43,9 @@ gen2 = datagen.flow_from_directory(file_dir2,
                                    save_prefix='tran_',
                                    seed=seed,
                                    save_format='png')
-import math
 
 step = math.ceil(len(gen1.classes) / gen1.batch_size)
 # 把数据扩充4倍
 for i in range(4 * step):
     gen1.next()
     gen2.next()
-

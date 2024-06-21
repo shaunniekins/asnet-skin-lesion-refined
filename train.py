@@ -1,36 +1,65 @@
+# train.py
+
+import pickle
+from model import AS_Net
+from loss import WBEC
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
+
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from PIL import Image
+import glob
+import numpy as np
+import tensorflow as tf
 import os
+import cv2
+
 
 import keras.models
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-import tensorflow as tf
-import numpy as np
-import glob
-from PIL import Image
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras.optimizers import Adam
-from loss import WBEC
-from model import AS_Net
-import pickle
 
 height = 192
 width = 256
 
+# def read_from_paths(image_path_list, mask_path_list):
+#     # image_path_list: 图片路径列表
+#     # mask_path_list: 标签路径列表
+#     # 返回4-D图片numpy array和4-D标签numpy array
+#     images = []
+#     masks = []
+#     for img_path, mask_path in zip(image_path_list, mask_path_list):
+#         image = Image.open(img_path).convert('RGB')
+#         image = np.array(image, dtype=np.float32)
+#         image = tf.image.adjust_gamma(image / 255., gamma=1.6)
+
+#         mask = Image.open(mask_path)
+#         mask = np.array(mask, dtype=np.float32)
+#         mask = np.expand_dims(mask, -1)
+
+#         images.append(image)
+#         masks.append(mask / 255)
+#     images_array = np.array(images)
+#     masks_array = np.array(masks)
+#     return images_array, masks_array
+
 
 def read_from_paths(image_path_list, mask_path_list):
-    # image_path_list: 图片路径列表
-    # mask_path_list: 标签路径列表
-    # 返回4-D图片numpy array和4-D标签numpy array
     images = []
     masks = []
     for img_path, mask_path in zip(image_path_list, mask_path_list):
         image = Image.open(img_path).convert('RGB')
         image = np.array(image, dtype=np.float32)
+        # Resize the image to a fixed size
+        image = cv2.resize(image, (width, height))
         image = tf.image.adjust_gamma(image / 255., gamma=1.6)
 
         mask = Image.open(mask_path)
         mask = np.array(mask, dtype=np.float32)
+        # Resize the mask to a fixed size
+        mask = cv2.resize(mask, (width, height),
+                          interpolation=cv2.INTER_NEAREST)
         mask = np.expand_dims(mask, -1)
 
         images.append(image)
@@ -76,12 +105,33 @@ def generator(all_image_list, all_mask_list):
 
 # Build model
 model = AS_Net()
-model.load_weights('./checkpoint/weights.hdf5')
-model.compile(optimizer=Adam(learning_rate=1e-4, decay=1e-7), loss=WBEC(), metrics=['binary_accuracy'])
+# model.load_weights('./checkpoint/weights.hdf5')
+# model.compile(optimizer=Adam(learning_rate=1e-4, decay=1e-7),
+#               loss=WBEC(), metrics=['binary_accuracy'])
 
-mcp_save = ModelCheckpoint('./checkpoint/weights.hdf5', save_weights_only=True)
-mcp_save_best = ModelCheckpoint('./checkpoint_best/weights_best.hdf5', verbose=1, save_best_only=True, save_weights_only=True,
-                                mode='min')# 0.23690
+initial_learning_rate = 1e-4
+decay_steps = 10000
+decay_rate = 0.9
+
+lr_schedule = ExponentialDecay(
+    initial_learning_rate,
+    decay_steps=decay_steps,
+    decay_rate=decay_rate,
+    staircase=True)
+
+optimizer = Adam(learning_rate=lr_schedule)
+
+model.compile(optimizer=optimizer,
+              loss=WBEC(), metrics=['binary_accuracy'])
+
+# mcp_save = ModelCheckpoint('./checkpoint/weights.hdf5', save_weights_only=True)
+mcp_save = ModelCheckpoint(
+    './checkpoint/weights.weights.hdf5', save_weights_only=True)
+
+# mcp_save_best = ModelCheckpoint('./checkpoint_best/weights_best.hdf5', verbose=1, save_best_only=True, save_weights_only=True,
+#                                 mode='min')  # 0.23690
+mcp_save_best = ModelCheckpoint('./checkpoint_best/weights.weights_best.weights.hdf5',
+                                verbose=1, save_best_only=True, save_weights_only=True, mode='min')  # 0.23690
 
 history = model.fit(x=generator(Tr_list, Tr_ms_list),
                     epochs=nb_epoch,

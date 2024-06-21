@@ -1,7 +1,9 @@
+# loss.py
+
 from tensorflow import nn
 import tensorflow as tf
 from keras import backend as K
-from keras.backend import binary_crossentropy
+from tensorflow.keras.backend import binary_crossentropy
 from keras.losses import Loss, binary_crossentropy
 
 
@@ -21,4 +23,3 @@ class WBEC(Loss):
         wbce += (1 - y_true) * tf.math.log(1 - y_pred + K.epsilon())
 
         return -wbce
-

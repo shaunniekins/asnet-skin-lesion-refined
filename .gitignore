@@ -3,3 +3,5 @@ dataset_isic18
 checkpoint
 checkpoint_best
 *.npy
+output
+env
