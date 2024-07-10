@@ -13,6 +13,7 @@ Download the ISIC 2018 train dataset from [this link](https://challenge.isic-arc
    - Inside `dataset_isic18`, create the following subdirectories and add data from the ISIC 2018 dataset:
      - ISIC2018_Task1_Training_GroundTruth
      - ISIC2018_Task1_Validation_GroundTruth
+     - ISIC2018_Task1-2_Test_Input
      - ISIC2018_Task1-2_Training_Input
      - ISIC2018_Task1-2_Validation_Input
 
