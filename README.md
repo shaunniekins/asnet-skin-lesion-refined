@@ -23,21 +23,21 @@ Download the ISIC 2018 train dataset from [this link](https://challenge.isic-arc
    pip install -r requirements.txt
    ```
 
-3. Prepare the ISIC 2018 dataset:
+3. Create directories for checkpoints:
+   ```
+   mkdir checkpoint checkpoint_best output predictions
+   ```
+
+4. Prepare the ISIC 2018 dataset:
    ```
    python3 Prepare_ISIC2018.py
    ```
 
-4. (Optional) Data augmentation:
+5. (Optional) Data augmentation:
    ```
    python3 augmentation.py
    ```
    This step increases the dataset size and improves robustness by generating augmented images and masks.
-
-5. Create directories for checkpoints:
-   ```
-   mkdir checkpoint checkpoint_best
-   ```
 
 6. Train the model:
    ```
@@ -47,6 +47,11 @@ Download the ISIC 2018 train dataset from [this link](https://challenge.isic-arc
 7. Evaluate the model:
    ```
    python3 evaluate.py
+   ```
+
+8. Generate predictions:
+   ```
+   python3 prediction.py
    ```
 
 

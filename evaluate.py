@@ -17,7 +17,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 np.set_printoptions(threshold=np.inf)
 
 
-####################################  Load Data #####################################
+#  Load Data
 te_data = np.load('data_val.npy').astype(np.float32)
 te_mask = np.load('mask_val.npy').astype(np.float32)
 te_mask = np.expand_dims(te_mask, axis=-1)
@@ -28,7 +28,6 @@ te_mask /= 255.
 print('ISIC18 Dataset loaded')
 
 model = AS_Net()
-# model.load_weights('./checkpoint_best/weights_best.hdf5')
 model.load_weights('./checkpoint_best/weights.weights_best.weights.hdf5')
 predictions = model.predict(te_data, batch_size=8, verbose=1)
 
