@@ -57,7 +57,7 @@ val_data = tf.image.adjust_gamma(val_data / 255., gamma=1.6)
 val_mask = np.expand_dims(val_mask, axis=-1)
 val_mask = val_mask / 255.
 
-batch_size = 16
+batch_size = 3 #16
 nb_epoch = 10
 steps_per_epoch = int(np.ceil(len(Tr_list)/batch_size))
 
@@ -80,7 +80,7 @@ def generator(all_image_list, all_mask_list):
 # Build model
 model = AS_Net()
 
-weights_path = './checkpoint/weights.weights.hdf5'
+weights_path = './checkpoint/weights.weights.h5'
 if os.path.exists(weights_path):
     model.load_weights(weights_path)
 else:
@@ -88,7 +88,7 @@ else:
 
 initial_learning_rate = 1e-4
 decay_steps = 10000
-decay_rate = 0.9
+decay_rate = 0.9  # double check if correct value
 
 lr_schedule = ExponentialDecay(
     initial_learning_rate,
@@ -102,8 +102,8 @@ model.compile(optimizer=optimizer,
               loss=WBEC(), metrics=['binary_accuracy'])
 
 mcp_save = ModelCheckpoint(
-    './checkpoint/weights.weights.hdf5', save_weights_only=True)
-mcp_save_best = ModelCheckpoint('./checkpoint_best/weights.weights_best.weights.hdf5',
+    filepath='./checkpoint/weights.weights.h5', save_weights_only=True)
+mcp_save_best = ModelCheckpoint('./checkpoint_best/weights.weights_best.weights.h5',
                                 verbose=1, save_best_only=True, save_weights_only=True, mode='min')
 
 history = model.fit(x=generator(Tr_list, Tr_ms_list),

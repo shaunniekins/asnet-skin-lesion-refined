@@ -4,4 +4,5 @@ checkpoint
 checkpoint_best
 *.npy
 output
+predictions
 env

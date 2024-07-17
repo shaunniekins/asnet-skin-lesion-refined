@@ -28,7 +28,7 @@ te_mask /= 255.
 print('ISIC18 Dataset loaded')
 
 model = AS_Net()
-model.load_weights('./checkpoint_best/weights.weights_best.weights.hdf5')
+model.load_weights('./checkpoint_best/weights.weights_best.weights.h5')
 predictions = model.predict(te_data, batch_size=8, verbose=1)
 
 y_scores = predictions.reshape(

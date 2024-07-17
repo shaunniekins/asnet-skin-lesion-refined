@@ -32,7 +32,7 @@ Test_data = np.array([preprocess_image(img_path) for img_path in Test_list])
 
 # Load the trained model
 model = AS_Net()
-model.load_weights('./checkpoint_best/weights.weights_best.weights.hdf5')
+model.load_weights('./checkpoint_best/weights.weights_best.weights.h5')
 
 # Make predictions
 predictions = model.predict(Test_data, batch_size=16, verbose=1)
