@@ -1,59 +1,101 @@
-# Attention-Synergy-Network (Personal Reconfiguration and Reimplementation)
+# Attention-Synergy-Network
 
 This is an unofficial implementation of AS-Net: Attention Synergy Network for skin lesion segmentation. The original paper can be found [here](https://doi.org/10.1016/j.eswa.2022.117112).
 
-## Dataset
+## Project Structure
 
-Download the ISIC 2018 train dataset from [this link](https://challenge.isic-archive.com/data/#2018).
+- `model.py` - Implementation of the AS-Net architecture
+- `loss.py` - Custom Weighted Binary Cross-Entropy loss function
+- `train.py` - Script for training the model
+- `dataset_isic18.py` - Script to prepare ISIC 2018 dataset
+- `augmentation.py` - Script for data augmentation
+- `evaluate.py` - Script for model evaluation
+
+## Directory Structure
+
+- `dataset_isic18/` - Contains the ISIC 2018 dataset
+  - `ISIC2018_Task1-2_Training_Input/` - Training images
+  - `ISIC2018_Task1_Training_GroundTruth/` - Training masks
+  - `ISIC2018_Task1-2_Validation_Input/` - Validation images
+  - `ISIC2018_Task1_Validation_GroundTruth/` - Validation masks
+- `checkpoint/` - Saves model weights during training
+- `checkpoint_best/` - Saves the best model weights
+- `output/` - Stores evaluation results and performance metrics
+- `predictions/` - Stores model predictions
+
+## Datasets
+
+You can download the ISIC 2018 train dataset from [this](https://challenge.isic-archive.com/data/#2018) link.
 
 ## Setup and Process
 
-1. Prepare the dataset:
-   - Create a `dataset_isic18` directory.
-   - Inside `dataset_isic18`, create the following subdirectories and add data from the ISIC 2018 dataset:
-     - ISIC2018_Task1_Training_GroundTruth
-     - ISIC2018_Task1_Validation_GroundTruth
-     - ISIC2018_Task1-2_Test_Input
-     - ISIC2018_Task1-2_Training_Input
-     - ISIC2018_Task1-2_Validation_Input
+1. Clone this repository:
+
+   ```bash
+   git clone <repository-url>
+   cd asnet-original-version
+   ```
 
 2. Set up the environment:
-   ```
+
+   ```bash
    python3 -m venv env
    source env/bin/activate
    pip install -r requirements.txt
    ```
 
-3. Create directories for checkpoints:
-   ```
-   mkdir checkpoint checkpoint_best output predictions
+3. Download and organize the ISIC 2018 dataset into the following structure:
+
+   ```dir
+   dataset_isic18/
+   ├── ISIC2018_Task1-2_Training_Input/
+   ├── ISIC2018_Task1_Training_GroundTruth/
+   ├── ISIC2018_Task1-2_Validation_Input/
+   └── ISIC2018_Task1_Validation_GroundTruth/
    ```
 
-4. Prepare the ISIC 2018 dataset:
-   ```
-   python3 Prepare_ISIC2018.py
+4. Prepare the dataset:
+
+   ```bash
+   python dataset_isic18.py
    ```
 
-5. (Optional) Data augmentation:
+   This script resizes images to 192×256 and saves processed data as .npy files.
+
+5. (Optional) Augment the dataset:
+
+   ```bash
+   python augmentation.py
    ```
-   python3 augmentation.py
-   ```
-   This step increases the dataset size and improves robustness by generating augmented images and masks.
+
+   This generates additional training samples through rotations, flips, and zoom transformations.
 
 6. Train the model:
+
+   ```bash
+   python train.py
    ```
-   python3 train.py
-   ```
+
+   Training progress and model weights will be saved in the `checkpoint/` directory.
 
 7. Evaluate the model:
-   ```
-   python3 evaluate.py
+
+   ```bash
+   python evaluate.py
    ```
 
-8. Generate predictions:
-   ```
-   python3 prediction.py
-   ```
+   This will generate performance metrics (Jaccard index, F1 score, AUC, etc.) and sample visualizations in the `output/` directory.
 
+## Model Performance
+
+After evaluation, the following metrics are computed:
+
+- Area under the ROC curve
+- Area under Precision-Recall curve
+- Jaccard similarity score
+- F1 score
+- Accuracy, Sensitivity, Specificity, and Precision
+
+Visual results including ROC curve, Precision-Recall curve, and sample predictions are saved in the `output/` directory.
 
 > Note: This implementation has been modified to serve as a basis for another research topic. Changes were made to accommodate module updates and specific requirements.

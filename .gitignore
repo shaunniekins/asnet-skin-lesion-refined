@@ -6,3 +6,4 @@ checkpoint_best
 output
 predictions
 env
+.DS_Store
